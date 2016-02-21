@@ -1,0 +1,8 @@
+#!/bin/tcsh
+
+setenv MPI_COMPILER gnu     # gnu OR intel OR pgi
+setenv MPI_HARDWARE ib      # gige (Gigabit Ethernet) OR ib (Infiniband)
+setenv MPI_SOFTWARE openmpi # openmpi (IB) or mvapich (IB) or mpich2 (GigE)
+
+make
+

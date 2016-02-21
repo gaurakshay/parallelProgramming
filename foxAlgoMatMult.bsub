@@ -1,0 +1,181 @@
+#!/bin/tcsh
+#
+# monteCarlo.bsub
+#
+# The BSUB directive below says the name of the queue to be used.
+# In most cases, you should use the queue named normal.
+#
+#BSUB -q normal # Sometimes we use sipe_q or similar.
+#
+# The BSUB directive below says to use MPI over a particular
+# interconnection network.
+#
+# Possible options are:
+#   -a mpich2
+#     Use MPI over Gigabit Ethernet (slow interconnection network).
+#     Use this when MPI_HARDWARE is set to gige.
+#   -a mvapich
+#     Use MPI over MVAPICH, a particular implementation of the MPI
+#       libraries that runs over the high performance Infiniband
+#       interconnection network).
+#     Use this when MPI_HARDWARE is set to ib and MPI_SOFTWARE is
+#       set to mvapich.
+#   -a openmpi
+#     Use MPI over OpenMPI, another implementation of the MPI
+#       libraries that runs over the high performance Infiniband
+#       interconnection network).
+#     Use this when MPI_HARDWARE is set to ib and MPI_SOFTWARE is
+#       set to openmpi.
+#
+# NOTE: The values for MPI_COMPILER, MPI_HARDWARE and MPI_SOFTWARE
+#   (if used) *MUST EXACTLY MATCH* those used when the executable
+#   was compiled.
+#
+#BSUB -a openmpi
+#
+# The BSUB directive below says to request exclusive access on the
+# participating compute nodes, so that other batch jobs (for example,
+# those submitted by other users) don't run on the same compute nodes
+# as this batch job, and therefore don't interfere with it.
+#
+#BSUB -x       #########BSUB -Is
+#
+# Use 32 MPI processes at 16 MPI processes per node, which is to
+# say 2 nodes.
+#
+# Please use the following pattern:
+# -- For n <= 16, please use ptile equal to n unless you have a
+#    very good reason to do otherwise.
+# -- For n >= 16, please use ptile of 16 unless you have a very
+#    good reason to do otherwise.
+# This is because each compute node has 2 chips and each chip
+# has 8 cores, for a total of 16 cores per node. We recommend
+# using the same number of MPI processes per node as cores,
+# unless you've benchmarked your code's performance and found
+# that you take fewer node hours by using fewer than 16 per node.
+#
+# NOTE: You are encouraged to change these to numbers that are
+# appropriate for you.
+#
+#BSUB -n 2 
+#BSUB -R "span[ptile=2]"
+#
+# STDOUT is the output that normally would go to the terminal screen.
+# STDERR is like STDOUT, except that it contains error messages instead
+# of regular output.
+#
+# The BSUB directive below says, send STDOUT and STDERR to the filenames
+# listed below.
+#
+# Note that, in these filenames, %J will be replaced by the batch job ID
+# number (for example, 2146 as above).
+#
+# Everywhere throughout this batch script file:
+# * CHANGE oucs002 to your username;
+# * CHANGE akshaygaur@ou.edu to your e-mail address.
+#
+#BSUB -o /home/oucs002/SIPE/hw2/%J_out.txt
+#BSUB -e /home/oucs002/SIPE/hw2/%J_err.txt
+#
+# The BSUB directive below says to run for up to 30 minutes (and
+# zero hours) of "wall clock" time (time experienced in real life).
+# Currently, the maximum allowable wall clock time per batch job is
+# 48:00 hours.
+#
+#BSUB -W 00:30
+#
+# The BSUB directive below says the name of the batch job, as it
+# will appear in the batch queue when you do a bjobs command.
+#
+# Everywhere throughout this batch script file:
+# * CHANGE oucs002 to your username;
+# * CHANGE akshaygaur@ou.edu to your e-mail address.
+#
+#BSUB -J "hw2"
+#
+# The BSUB directive below says the e-mail address to send
+# notifications to, which should be changed to your e-mail address.
+#
+# Everywhere throughout this batch script file:
+# * CHANGE oucs002 to your username;
+# * CHANGE akshaygaur@ou.edu to your e-mail address.
+#
+#BSUB -u akshaygaur@ou.edu
+#
+# The BSUB directive below says to e-mail a notification when the
+# batch job either completes or fails.
+#
+# If you only want e-mails when when a batch job fails, then delete
+# the BSUB directive below.#BSUB -N
+
+# Change to the directory that you want to run in.
+#
+# Everywhere throughout this batch script file:
+# * CHANGE oucs002 to your username;
+# * CHANGE akshaygaur@ou.edu to your e-mail address.
+
+cd /home/oucs002/SIPE/hw2/
+
+# Make sure that you're in the correct directory.
+
+pwd
+
+# Set the environment variable for the compiler family that you
+# used to compile your executable. This *MUST EXACTLY MATCH* what
+# you used when you compiled your executable.
+#
+# For possible value of MPI_COMPILER, see:
+#   http://www.oscer.ou.edu/boomer_quick_and_dirty.php
+#
+
+setenv MPI_COMPILER gnu # intel OR pgi OR gnu OR nag
+
+# Set the environment variable for the interconnection network that
+# you used to compile your executable. This *MUST EXACTLY MATCH*
+# what you used when you compiled your executable.
+#
+# For possible value of MPI_HARDWARE, see:
+#   http://www.oscer.ou.edu/boomer_quick_and_dirty.php
+#
+
+setenv MPI_HARDWARE ib # ib (Infiniband) or gige (Gigabit Ethernet)
+
+# Set the environment variable for the specific subset of the
+# interconnection network that you used to compile your
+# executable. This *MUST EXACTLY MATCH* what you used when you
+# compiled your executable.
+#
+# NOTE: Currently, you only need to set MPI_SOFTWARE if you are
+# using OpenMPI over Infiniband, which is why it's commented out
+# by default.
+#
+# For possible value of MPI_SOFTWARE, see:
+#   http://www.oscer.ou.edu/boomer_quick_and_dirty.php
+#
+
+setenv MPI_SOFTWARE openmpi # openmpi (IB) or mvapich (IB) or mpich2 (GigE)
+
+# Make sure that various storage size limits on this Unix "shell"
+# aren't an impediment to this batch job's success.
+
+limit cputime      unlimited
+limit filesize     unlimited
+limit datasize     unlimited
+limit stacksize    unlimited
+limit memoryuse    unlimited
+limit vmemoryuse   2000m
+
+# Run the executable.
+#
+# The date commands help track runtime and performance.
+#
+# Everywhere throughout this batch script file:
+# * CHANGE oucs002 to your username;
+# * CHANGE akshaygaur@ou.edu to your e-mail address.
+#
+# NOTE!!! YOU ***MUST*** USE THE ABSOLUTE FULL PATH FOR YOUR EXECUTABLE!
+#   ***DON'T*** USE A RELATIVE PATH OR LEAVE OUT THE PATH!!!
+
+date
+mpirun.lsf /home/oucs002/SIPE/hw2/monteCarlo
+date

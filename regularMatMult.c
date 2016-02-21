@@ -78,19 +78,22 @@ void main () {
     struct timespec start, end;
 
     // Populating the two matrices to be multiplied with random numbers.
+    printf("Populating arrays of size %d.\n", row1);
     randomizeArray(row1, col1, mat1);
-    printf("Array #1 generated\n");
+    printf("Array #1 generated.\n");
     randomizeArray(row2, col2, mat2);
-    printf("Array #2 generated\n");
+    printf("Array #2 generated.\n");
     // Initialize the array that will store the results.
     initializeArray(row1, col2, result);
-    printf("Resultant array initialized\n");
+    printf("Resultant array initialized.\n");
 
     // Print the arrays that will be multiplied.
     //printf("Printing array #1\n");
     //printArray(row1, col1, mat1);
     //printf("Printing array #2\n");
     //printArray(row2, col2, mat2);
+    
+    printf("Multipying the two arrays...\n");
 
     // Start the clock to measure the performance.
     //begin = clock();
@@ -109,7 +112,8 @@ void main () {
     //end = clock();
     clock_gettime(CLOCK_MONOTONIC, &end);
 
-    printf("Time taken in seconds: %f\n", ( (end.tv_sec-start.tv_sec) + ((end.tv_nsec-start.tv_nsec) / 1000000000.0) ) );
+    printf("\nTime taken in seconds to calculated the result: %f\n",
+            ( (end.tv_sec-start.tv_sec) + ((end.tv_nsec-start.tv_nsec) / 1000000000.0) ) );
 
     // Print the resulting array.
     //printf("Printing array result\n");
