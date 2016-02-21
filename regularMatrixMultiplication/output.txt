@@ -1,0 +1,12 @@
+Allocating memory to the matrices.
+Memory allocated to matrix #1 (1024x1024).
+Memory allocated to matrix #2 (1024x1024).
+Memory allocated to matrix which will store the results (1024x1024).
+Populating matrices.
+Matrix #1 randomized.
+Matrix #2 randomized.
+Resultant matrix initialized.
+Multipying the two matrices...
+
+Time taken in seconds to calculated the result: 10.604221
+Freeing the memory allocated for the matricesEND OF PROGRAM.
