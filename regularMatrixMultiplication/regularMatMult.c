@@ -14,6 +14,7 @@
  */
 
 #include <stdio.h>      // For print and stuff.
+#include <stdlib.h>
 #include <time.h>       // For the clock_gettime function.
 
 // Method to populate the matrix with random numbers using rand().
@@ -66,10 +67,10 @@ void printArray(int row, int col, int mat[row][col]) {
 
 // The main method
 void main () {
-    int row1 = 1000;
-    int col1 = 1000;
-    int row2 = 1000;  // This should be equal to col1 variable.
-    int col2 = 1000;
+    int row1 = 16;
+    int col1 = row1;
+    int row2 = row1;  // This should be equal to col1 variable.
+    int col2 = row1;
     int mat1[row1][col1];
     int mat2[row2][col2];
     int result[row1][col2];
