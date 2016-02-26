@@ -150,6 +150,7 @@ int main() {
     for(step = 0; step < q; step++) {
         u = (my_row_id + step) % q;
         MPI_Bcast(loc_mat1, sub_array_size*sub_array_size, MPI_DOUBLE, my_row_id, row_communicator);
+        MPI_Bcast(loc_mat2, sub_array_size*sub_array_size, MPI_DOUBLE, my_col_id, col_communicator);
 
         for(i=0; i<sub_array_size; i++) {
             for(j=0; j<sub_array_size; j++) {
@@ -159,14 +160,14 @@ int main() {
                 }
             }
         }
-        if(src%2 == 0) {
-            MPI_Send(loc_mat2, sub_array_size*sub_array_size, MPI_DOUBLE, dest, 0, col_communicator);
-            MPI_Recv(loc_mat2, sub_array_size*sub_array_size, MPI_DOUBLE, src, 0, col_communicator, MPI_STATUS_IGNORE);
-        }
-        else {
-            MPI_Recv(loc_mat2, sub_array_size*sub_array_size, MPI_DOUBLE, src, 0, col_communicator, MPI_STATUS_IGNORE);
-            MPI_Send(loc_mat2, sub_array_size*sub_array_size, MPI_DOUBLE, dest, 0, col_communicator);
-        }
+        //if(src%2 == 0) {
+        //    MPI_Send(loc_mat2, sub_array_size*sub_array_size, MPI_DOUBLE, dest, 0, col_communicator);
+        //    MPI_Recv(loc_mat2, sub_array_size*sub_array_size, MPI_DOUBLE, src, 0, col_communicator, MPI_STATUS_IGNORE);
+        //}
+        //else {
+        //    MPI_Recv(loc_mat2, sub_array_size*sub_array_size, MPI_DOUBLE, src, 0, col_communicator, MPI_STATUS_IGNORE);
+        //    MPI_Send(loc_mat2, sub_array_size*sub_array_size, MPI_DOUBLE, dest, 0, col_communicator);
+        //}
         //MPI_Sendrecv(loc_mat2, 1, MPI_DOUBLE, dest, 0, loc_mat2, 1, MPI_DOUBLE, src, 0, col_communicator, MPI_STATUS_IGNORE);
 
         //MPI_Sendrecv_replace(loc_mat2, sub_array_size*sub_array_size, MPI_DOUBLE, dest, 0, src, 0, col_communicator, MPI_STATUS_IGNORE);
