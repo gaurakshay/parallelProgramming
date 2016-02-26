@@ -1,19 +1,21 @@
 /*
- * Program  :   regularMatMult2.c
+ * Program  :   foxAlgoMatMult.c
  *
  * Purpose  :   This program generates two matrices
  *              with random number generator populating it.
- *              Then, straightforward matrix multiplication
- *              is used to calculate the results.
+ *              Then, uses fox algorigthm to compute matrix
+ *              multiplication in a parallel fashion to 
+ *              calculate the results.
  *
  * Author   :   Akshay Gaur
  *
- * Date     :   2016/02/20
+ * Date     :   2016/02/21
  *
- * Note     :   The program now uses malloc to assign memory
+ * Note     :   The program uses malloc to assign memory
  *              to the arrays since using large arrays in Stack
- *              causes Segmentation Fault (please refer to 
- *              regularMatMult.c for regular array initialization)
+ *              causes Segmentation Fault (please refer to:
+ *              ~/regularMatrixMultiplication/regularMatMult.c
+ *              for regular array initialization)
  *
  *              Also, since the program uses clock_gettime() function
  *              this should be run on *nix based systems.
@@ -24,6 +26,7 @@
 
 #include <stdio.h>      // For print and stuff.
 #include <stdlib.h>     // For malloc.
+#include <mpi.h>        // For mpi functionality.
 #include <time.h>       // For the clock_gettime function.
 
 // Allocate memory to the arrays of the size passed as argumens.
@@ -91,7 +94,7 @@ void printArray(double *mat, int rows, int cols) {
 
 // The main method
 void main () {
-    int row1 = 16384;
+    int row1 = 3;
     int col1 = row1;
     int row2 = row1;  // This should be equal to col1 variable.
     int col2 = row1;
@@ -100,6 +103,12 @@ void main () {
     double *result;
     int i, j, k;
     struct timespec start, end;
+    int noOfProc;
+    int thisRank;
+
+    MPI_Init(NULL, NULL); //Initialize
+    MPI_Comm_size(MPI_COMM_WORLD, &noOfProc); //Get the # of processes
+    MPI_Comm_rank(MPI_COMM_WORLD, &thisRank); //Get the rank of this process
 
     // Allocate memory to the matrices.
     printf("Allocating memory to the matrices.\n");
