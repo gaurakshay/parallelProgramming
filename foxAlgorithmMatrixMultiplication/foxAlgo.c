@@ -13,7 +13,7 @@ double * createArray(int rows, int cols) {
     // matrix[x*columns + j] so that x*columns forwards the pointer
     // to the xth row and then j takes  the pointer to the jth element in
     // that row.
-    mat = malloc(sizeof(double *) * rows * cols);
+    mat = malloc(sizeof(double) * rows * cols);
     
     return mat;
 }
@@ -71,7 +71,7 @@ void printArray(double *mat, int rows, int cols) {
 
 // The main method
 int main() {
-    int n = 16;                 //Size of matrices
+    int n = 1024;                 //Size of matrices
     int p;                      //no of processes
     int q;                      //Square root of number of processes
     MPI_Comm row_communicator;  //for communication accross row
@@ -143,14 +143,10 @@ int main() {
             loc_mat2[i*sub_array_size + j] = mat2[((my_row_id*sub_array_size)+i)*n + ((my_col_id*sub_array_size)+j)];
         }
     }
-    //printArray(temp_mat1, sub_array_size, sub_array_size);
-    //printArray(test, sub_array_size, sub_array_size);
-    
     
     for(step = 0; step < q; step++) {
         u = (my_row_id + step) % q;
         MPI_Bcast(loc_mat1, sub_array_size*sub_array_size, MPI_DOUBLE, my_row_id, row_communicator);
-        MPI_Bcast(loc_mat2, sub_array_size*sub_array_size, MPI_DOUBLE, my_col_id, col_communicator);
 
         for(i=0; i<sub_array_size; i++) {
             for(j=0; j<sub_array_size; j++) {
@@ -160,17 +156,14 @@ int main() {
                 }
             }
         }
-        //if(src%2 == 0) {
-        //    MPI_Send(loc_mat2, sub_array_size*sub_array_size, MPI_DOUBLE, dest, 0, col_communicator);
-        //    MPI_Recv(loc_mat2, sub_array_size*sub_array_size, MPI_DOUBLE, src, 0, col_communicator, MPI_STATUS_IGNORE);
-        //}
-        //else {
-        //    MPI_Recv(loc_mat2, sub_array_size*sub_array_size, MPI_DOUBLE, src, 0, col_communicator, MPI_STATUS_IGNORE);
-        //    MPI_Send(loc_mat2, sub_array_size*sub_array_size, MPI_DOUBLE, dest, 0, col_communicator);
-        //}
-        //MPI_Sendrecv(loc_mat2, 1, MPI_DOUBLE, dest, 0, loc_mat2, 1, MPI_DOUBLE, src, 0, col_communicator, MPI_STATUS_IGNORE);
-
-        //MPI_Sendrecv_replace(loc_mat2, sub_array_size*sub_array_size, MPI_DOUBLE, dest, 0, src, 0, col_communicator, MPI_STATUS_IGNORE);
+        if(src%2 == 0) {
+            MPI_Send(loc_mat2, sub_array_size*sub_array_size, MPI_DOUBLE, dest, 0, col_communicator);
+            MPI_Recv(loc_mat2, sub_array_size*sub_array_size, MPI_DOUBLE, src, 0, col_communicator, MPI_STATUS_IGNORE);
+        }
+        else {
+            MPI_Recv(loc_mat2, sub_array_size*sub_array_size, MPI_DOUBLE, src, 0, col_communicator, MPI_STATUS_IGNORE);
+            MPI_Send(loc_mat2, sub_array_size*sub_array_size, MPI_DOUBLE, dest, 0, col_communicator);
+        }
     }
     
     free(mat1);
