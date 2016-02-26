@@ -13,9 +13,9 @@
  * See Chap 7, pp. 113 & ff and pp. 125 & ff in PPMPI
  */
 #include <stdio.h>
-#include "mpi.h"
 #include <math.h>
 #include <stdlib.h>
+#include "mpi.h"
 
 typedef struct {
     int       p;         /* Total number of processes    */
@@ -55,7 +55,7 @@ void             Print_local_matrices(char* title, LOCAL_MATRIX_T* local_A,
                      GRID_INFO_T* grid);
 
 /*********************************************************/
-main(int argc, char* argv[]) {
+void main(int argc, char* argv[]) {
     int              p;
     int              my_rank;
     GRID_INFO_T      grid;

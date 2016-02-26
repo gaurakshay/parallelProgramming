@@ -91,7 +91,7 @@ void printArray(double *mat, int rows, int cols) {
 
 // The main method
 void main () {
-    int row1 = 2048;
+    int row1 = 4096;
     int col1 = row1;
     int row2 = row1;  // This should be equal to col1 variable.
     int col2 = row1;
